@@ -12,7 +12,7 @@ namespace WpfApp1.Model
         public int Zapis_ID { get; set; }
 
         [Column(TypeName = "date")]
-        public DateTime? Zapis_date { get; set; }
+        public DateTime Zapis_date { get; set; }
 
         [StringLength(30)]
         public string Pacient_FIO { get; set; }

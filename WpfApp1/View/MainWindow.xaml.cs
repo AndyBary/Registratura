@@ -23,7 +23,7 @@ namespace WpfApp1
     {
         public MainWindow()
         {
-            DataContext = new SheduleService();
+            DataContext = new ProgrammService();
             InitializeComponent();
         }
     }

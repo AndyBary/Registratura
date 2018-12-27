@@ -8,29 +8,33 @@ using System.Collections.ObjectModel;
 using System.Data.Entity;
 using System.Data;
 using WpfApp1.Model;
+using WpfApp1.Helpers;
 using System.Windows;
 using WpfApp1.View;
-using WpfApp1.Helpers;
 
 namespace WpfApp1.ViewModel
 {
    
 
-    public class SheduleService : Base
+    public class ProgrammService : Base
     {
         PoliklinikaDB db;
 
         public List<Raspisanie> rasp { get; set; }
         public List<Pacient> pacient{ get; set; }
         public List<Doctor> doctor { get; set; }
+        public List<Zapis> zapis { get; set; }
         public RelayCommand AddPacientCommand { get; set; }
         public RelayCommand AddZapisCommand { get; set; }
-
-        public SheduleService()
+        public RelayCommand CreatePacientCommand { get; set; }
+        public RelayCommand HranimkaCommand { get; set; }
+        public ProgrammService()
         {
+
             AddPacientCommand = new RelayCommand(AddPacient, CanExecute);
             AddZapisCommand = new RelayCommand(AddZapis, CanExecute);
-
+            CreatePacientCommand = new RelayCommand(CreatePacient, CanExecute);
+            //HranimkaCommand = new RelayCommand(Hranimka, CanExecute);
             db = new PoliklinikaDB();
             db.Raspisanie.Load();
             rasp = db.Raspisanie.ToList();
@@ -40,6 +44,9 @@ namespace WpfApp1.ViewModel
 
             db.Doctor.Load();
             doctor = db.Doctor.ToList();
+
+            db.Zapis.Load();
+            zapis = db.Zapis.ToList();
         }
 
         public void spravcheck(string ul, PacientAddWindow f, Pacient pacient)
@@ -55,49 +62,74 @@ namespace WpfApp1.ViewModel
             if (ul == "Станкостроителей, 1" || ul == "Станкостроителей, 2" || ul == "Станкостроителей, 3") { pacient.Uchastok_number = 7; }
         }
 
-        /*void CreatePacient()
+        /*public class SPResult
         {
-            Pacient pacient = new Pacient();
-            db.Pacient.Add(pacient);
-            Save();
+            public string Pacient_FIO { get; set; }
+            public DateTime Zapis_date { get; set; }
+            public string Zapis_time { get; set; }
+            public string Doctor_FIO { get; set; }
+        }
+
+        public List<SPResult> Hranimka(object parameter, DateTime start, DateTime end)
+        {
+            System.Data.SqlClient.SqlParameter param1 = new System.Data.SqlClient.SqlParameter("@start", start);
+            System.Data.SqlClient.SqlParameter param2 = new System.Data.SqlClient.SqlParameter("@end", end);
+            db = new PoliklinikaDB();
+            var result = db.Database.SqlQuery<SPResult>("otchet1 @start, @end", new object[] { param1, param2 }).ToList();
+            return result;
         }*/
 
-        void AddPacient(object parameter)
+
+
+        public void CreatePacient(object parameter)
         {
+            PacientAddWindow p = new PacientAddWindow();
+            string ul;
             Pacient pacient = new Pacient();
 
-            {
-                string ul;
-                SelectedPolis_number = _SelectedPolis_number;
-                SelectedPacient_FIO = _SelectedPacient_FIO;
-                SelectedGender = _SelectedGender;
-                SelectedBirth_day = _SelectedBirth_day;
-                SelectedAdres = _SelectedAdres;
-                //ul = f.AdresTB.Text;
-                //spravcheck(ul, f, pacient);
-                db.Pacient.Add(pacient);
-                //MessageBox.Show("Пациент добавлен");
-                Save();
-                var p = new PacientAddWindow();
-                p.Show();
-                CloseWindow();
-            };
+            pacient.Polis_number = _SelectedPolis_number;
+            pacient.FIO = p.FIOTB.Text;
+            pacient.Gender = p.GenderCB.Text;
+            pacient.Birth_day = Convert.ToString(p.Birth_dayTB.Text);
+            pacient.Adres = p.AdresTB.Text;
+            ul = p.AdresTB.Text;
+            spravcheck(ul, p, pacient);
+
+            db.Pacient.Load();
+
+            db.Pacient.Add(pacient);
+            SaveChanges();
+
+            MessageBox.Show("Паицент добавлен");
+            CloseWindow();
+        }
+        
+        public void AddPacient(object parameter)
+        {
+            PacientAddWindow p = new PacientAddWindow();
+            p.Show();
+            SaveChanges();
         }
 
         void AddZapis(object parameter)
         {
-              Zapis zapis = new Zapis();
-
+              Zapis z = new Zapis();
             {
-                SelectedZapis_date = _SelectedZapis_date;
-                SelectedPacient_FIO = _SelectedPacient_FIO;
-                SelectedZapis_time = SelectedZapis_time;
-                SelectedDoctor_FIO = _SelectedDoctor_FIO;
-                db.Zapis.Add(zapis);
-                
+                z.Zapis_date = _SelectedZapis_date;
+                z.Pacient_FIO = _SelectedPacient_FIO;
+                z.Zapis_time = _SelectedZapis_time;
+                z.Doctor_FIO = _SelectedDoctor_FIO;
+
+            }
+
+                if (SelectedZapis_time == "")
+                {
+                    MessageBox.Show("Введите время приема");
+                    return;
+                }
+                db.Zapis.Add(z);
                 MessageBox.Show("Пациент записан");
-                Save();
-            };
+                SaveChanges();
         }
 
         int _SelectedPolis_number;
@@ -116,7 +148,6 @@ namespace WpfApp1.ViewModel
                 }
             }
         }
-
 
         string _SelectedGender;
         public string SelectedGender
@@ -185,8 +216,9 @@ namespace WpfApp1.ViewModel
                 }
             }
         }
-        Doctor _SelectedDoctor_FIO;
-        public Doctor SelectedDoctor_FIO
+
+        string _SelectedDoctor_FIO;
+        public string SelectedDoctor_FIO
         {
             get
             {
@@ -202,8 +234,8 @@ namespace WpfApp1.ViewModel
             }
         }
 
-        TimeSpan _SelectedZapis_time;
-        public TimeSpan SelectedZapis_time
+        string _SelectedZapis_time;
+        public string SelectedZapis_time
         {
             get
             {
@@ -218,6 +250,7 @@ namespace WpfApp1.ViewModel
                 }
             }
         }
+
         DateTime _SelectedZapis_date;
         public DateTime SelectedZapis_date
         {
@@ -235,8 +268,8 @@ namespace WpfApp1.ViewModel
             }
         }
 
-        Pacient _SelectedPacient_FIO;
-        public Pacient SelectedPacient_FIO
+        string _SelectedPacient_FIO;
+        public string SelectedPacient_FIO
         {
             get
             {
@@ -286,15 +319,15 @@ namespace WpfApp1.ViewModel
             }
         }
 
-        public bool Save()
+        public bool SaveChanges()
         {
-            if (db.SaveChanges() > 0) return true;
-            return false;
+            /*if (db.SaveChanges() > 0) */return true;
+            //return false;
         }
 
         bool CanExecute(object parameter)
         {
-            return ((SelectedDoctor_FIO == null) && (SelectedPacient_FIO == null));
+            return true;
         }
     }
 }

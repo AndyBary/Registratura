@@ -8,18 +8,29 @@
         xmlns:ViewModel="clr-namespace:WpfApp1.ViewModel"
         mc:Ignorable="d"
         Title="Электронная регистратура" Height="450" Width="800" ResizeMode="NoResize">
+    <Window.Background>
+        <ImageBrush ImageSource="/WpfApp1;component/Resources/Puls.jpg"/>
+    </Window.Background>
+
+
     <Grid>
+        <Grid.ColumnDefinitions>
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="0.7*"/>
             <RowDefinition Height="0*"/>
         </Grid.RowDefinitions>
-        <TabControl Height="410" Margin="10,10,0.6,0" VerticalAlignment="Top">
+        <TabControl  Height="420" Margin="0,1,0,0" VerticalAlignment="Top" IsSynchronizedWithCurrentItem="False">
+            <TabControl.Background>
+                <ImageBrush ImageSource="/WpfApp1;component/Resources/Puls.jpg"/>
+            </TabControl.Background>
+
             <TabItem Header="Расписание">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="1*"></RowDefinition>
                     </Grid.RowDefinitions>
-                    <DataGrid Grid.Row="0" IsReadOnly="True" AutoGenerateColumns="False" HorizontalAlignment="Left" Height="362" Margin="10,10,0,0" VerticalAlignment="Top" Width="749" x:Name="RaspisanieGrid" ItemsSource="{Binding rasp}" >
+                    <DataGrid Grid.Row="0" IsReadOnly="True" AutoGenerateColumns="False" HorizontalAlignment="Left" Height="382" VerticalAlignment="Top" Width="777" x:Name="RaspisanieGrid" ItemsSource="{Binding rasp}" >
                         <DataGrid.Columns>
                             <DataGridTextColumn Binding="{Binding Kabinet_vracha}" Header="Кабинет" Width="60"></DataGridTextColumn>
                             <DataGridTextColumn Binding="{Binding FIO}" Header="ФИО врача" Width="100"></DataGridTextColumn>
@@ -36,9 +47,9 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="1*"></RowDefinition>
                     </Grid.RowDefinitions>
-                    <Button Command="{Binding AddPacientComand}" Content="Добавить пациента" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="113"  Height="19"/>
+                    <Button Command="{Binding AddPacientCommand}" Content="Добавить пациента" HorizontalAlignment="Left" VerticalAlignment="Top" Width="113"  Height="19"/>
 
-                    <DataGrid Grid.Row="0" IsReadOnly="True" AutoGenerateColumns="False" HorizontalAlignment="Left" Height="338" Margin="10,34,0,0" VerticalAlignment="Top" Width="746" x:Name="PacientGrid" ItemsSource="{Binding pacient}">
+                    <DataGrid Grid.Row="0" IsReadOnly="True" AutoGenerateColumns="False" HorizontalAlignment="Left" Height="363" Margin="0,19,0,0" VerticalAlignment="Top" Width="777" x:Name="PacientGrid" ItemsSource="{Binding pacient}">
                         <DataGrid.Columns>
                             <DataGridTextColumn Binding="{Binding Polis_number}" Header="Полис" Width="90"/>
                             <DataGridTextColumn Binding="{Binding FIO}" Header="ФИО пациента" Width="100"/>
@@ -48,27 +59,19 @@
                             <DataGridTextColumn Binding="{Binding Uchastok_number}" Header="Номер учстка" Width="90"/>
                         </DataGrid.Columns>
                     </DataGrid>
-
-
                 </Grid>
             </TabItem>
             <TabItem Header="Запись на прием">
-                <Grid Background="#FFE5E5E5" Margin="0,5,-2,-5">
+                <Grid x:Name="ZapisGrid" Background="#FFE5E5E5" Margin="186,97,185,99">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="9*"/>
-                        <ColumnDefinition Width="10*"/>
                     </Grid.ColumnDefinitions>
                     <Label Content="Выберите пациента" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="26" Width="118"/>
-                    <Label Content="Выберите врача" HorizontalAlignment="Left" Margin="8.2,10,0,0" VerticalAlignment="Top" Grid.Column="1" Height="26" Width="99"/>
-                    <Label Content="Выберите специальность" HorizontalAlignment="Left" Margin="8.2,81,0,0" VerticalAlignment="Top" Grid.Column="1" Height="26" Width="149"/>
-                    <Label Content="Номер кабинета" HorizontalAlignment="Left" Margin="8.2,151,0,0" VerticalAlignment="Top" Grid.Column="1" Height="26" Width="101"/>
-                    <Label Content="Выберите дату и время" HorizontalAlignment="Left" Margin="10,151,0,0" VerticalAlignment="Top" Height="26" Width="138"/>
+                    <Label Content="Выберите врача" HorizontalAlignment="Left" Margin="211,15,0,0" VerticalAlignment="Top" Height="26" Width="99"/>
+                    <Label Content="Выберите дату и время" HorizontalAlignment="Left" Margin="10,106,0,0" VerticalAlignment="Top" Height="26" Width="138"/>
                     <ComboBox x:Name="PacientCB" SelectedItem="{Binding SelectedPacient_FIO}" DisplayMemberPath="FIO" ItemsSource="{Binding pacient}" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" Width="187" Height="22"/>
-                    <ComboBox x:Name="DoctorCB" SelectedItem="{Binding SelectedDoctor_FIO, Mode=TwoWay}" DisplayMemberPath="FIO" ItemsSource="{Binding doctor}" HorizontalAlignment="Left" Margin="8.2,41,0,0" VerticalAlignment="Top" Width="187" Grid.Column="1" Height="22"/>
-                    <ComboBox x:Name="SpecialityCB" SelectedItem="{Binding SelectedSpeciality, Mode=TwoWay}" DisplayMemberPath="Speciality" ItemsSource="{Binding doctor}" HorizontalAlignment="Left" Margin="8.2,112,0,0" VerticalAlignment="Top" Width="187" Grid.Column="1" Height="22"/>
-                    <ComboBox x:Name="KabinetCB" SelectedItem="{Binding SelectedKabinet, Mode=TwoWay}" DisplayMemberPath="Kabinet" ItemsSource="{Binding doctor}" HorizontalAlignment="Left" Margin="8.2,184,0,0" VerticalAlignment="Top" Width="187" Grid.Column="1" Height="22"/>
-                    <DatePicker HorizontalAlignment="Left" Margin="10,182,0,0" VerticalAlignment="Top" Width="138" Height="25"/>
-                    <ComboBox SelectedItem="{Binding SelectedZapis_Time}" HorizontalAlignment="Left" Margin="153,184,0,0" VerticalAlignment="Top" Width="73" Height="22">
+                    <ComboBox x:Name="DoctorCB" SelectedItem="{Binding SelectedDoctor_FIO, Mode=TwoWay}" DisplayMemberPath="FIO" ItemsSource="{Binding doctor}" HorizontalAlignment="Left" Margin="211,41,0,0" VerticalAlignment="Top" Width="187" Height="22" RenderTransformOrigin="0.567,0.5"/>
+                    <DatePicker x:Name="Zapis_date" HorizontalAlignment="Left" Margin="10,137,0,0" VerticalAlignment="Top" Width="138" Height="25"/>
+                    <ComboBox x:Name="Zapis_timeCB" SelectedItem="{Binding SelectedZapis_Time}" HorizontalAlignment="Left" Margin="153,140,0,0" VerticalAlignment="Top" Width="73" Height="22">
                         <ComboBoxItem Content="10:00" Tag="1"/>
                         <ComboBoxItem Content="10:30" Tag="2"/>
                         <ComboBoxItem Content="11:00" Tag="3"/>
@@ -81,18 +84,22 @@
                         <ComboBoxItem Content="14:30" Tag="10"/>
                         <ComboBoxItem Content="15:00" Tag="11"/>
                     </ComboBox>
-                    <Button Command="{Binding AddZapisCommand}" CommandParameter="" Content="Записаться" Grid.Column="1" HorizontalAlignment="Left" Margin="10,227,0,0" VerticalAlignment="Top" Width="82" Height="23"/>
+                    <Button Command="{Binding AddZapisCommand}" CommandParameter="" Content="Записаться" HorizontalAlignment="Left" Margin="254,137,0,0" VerticalAlignment="Top" Width="82" Height="23" RenderTransformOrigin="1.049,-3.174"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Очередь пациентов">
-                <Grid Background="#FFE5E5E5">
-                    <DataGrid HorizontalAlignment="Left" Height="300" Margin="10,72,0,0" VerticalAlignment="Top" Width="746"/>
-                    <Label Content="Список пациентов в очереди" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-                    <Label Content="с" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top"/>
-                    <Label Content="по" HorizontalAlignment="Left" Margin="157,41,0,0" VerticalAlignment="Top"/>
-                    <DatePicker HorizontalAlignment="Left" Margin="31,43,0,0" VerticalAlignment="Top" Width="121"/>
-                    <DatePicker HorizontalAlignment="Left" Margin="186,43,0,0" VerticalAlignment="Top" Width="121"/>
-                    <Button Content="Выполнить" HorizontalAlignment="Left" Margin="327,44,0,0" VerticalAlignment="Top" Width="75"/>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <DataGrid Grid.Row="0" IsReadOnly="True" AutoGenerateColumns="False" HorizontalAlignment="Left" Height="382" VerticalAlignment="Top" Width="777" x:Name="OcheredGrid" ItemsSource="{Binding zapis}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Binding="{Binding Zapis_date}" Header="Дата" Width="70"/>
+                            <DataGridTextColumn Binding="{Binding Pacient_FIO}" Header="ФИО пациента" Width="100"/>
+                            <DataGridTextColumn Binding="{Binding Zapis_time}" Header="Время" Width="60"/>
+                            <DataGridTextColumn Binding="{Binding Doctor_FIO}" Header="Фио врача" Width="110"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
                 </Grid>
 
             </TabItem>

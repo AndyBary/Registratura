@@ -10,7 +10,6 @@ namespace WpfApp1.Model
     public partial class Pacient
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Polis_number { get; set; }
 
         [Required]
@@ -21,8 +20,9 @@ namespace WpfApp1.Model
         [StringLength(10)]
         public string Gender { get; set; }
 
-        [Column(TypeName = "date")]
-        public DateTime Birth_day { get; set; }
+        // [Column(TypeName = "date")]
+        [StringLength(10)]
+        public string Birth_day { get; set; }
 
         [Required]
         [StringLength(30)]
